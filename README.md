@@ -3,6 +3,7 @@
 Dataproc Metastore is a fully managed Apache Hive metastore (HMS) running on Google Cloud. In this repository, we will study Dataproc Metastore from the Apache Hive mechanism.<br>
 First of all, Apache Hive provides with a SQL-compatible language on Hadoop cluster. But it is very difficult to understand even difference between Hive and Presto / Spark. I learn how the Hive can preserve the processing result in storage via enableHiveSupport option at initiation of Spark Session, because I don't have any pure Hive environments.<br>
 
+---
 Dataproc Metastore は、Google Cloud 上で実行されるフルマネージドの Apache Hive metastore（HMS）です。このリポジトリでは、Apache Hive メカニズムから Dataproc Metastore について学習します。<br>
 そもそも、Apache Hive は Hadoop クラスター上で SQL 互換言語を提供するものです。念の為、Hive と Presto / Spark の違いを以下に整理しておきます。今回、純粋な Hive 環境を準備するのが難しかったため、Spark セッションの開始時に EnableHiveSupport オプションを使用して処理結果をストレージに保存する方法で、Hive環境を再現しています。
 
@@ -20,6 +21,7 @@ See also URL below:
 # 0. Create Virtual Machine and Run mongoDB
 Here we will use mongoDB as the data source. See also URL below to use Spark for mongoDB:<br>
 
+---
 ここではデータソースとしてmongoDBを使用します。 mongoDB に Spark を使用するには、以下の URL も参照してください。
 > https://github.com/developer-onizuka/mongo-Spark
  
@@ -27,6 +29,7 @@ Here we will use mongoDB as the data source. See also URL below to use Spark for
 Enabling hive support, allows Spark to seamlessly integrate with existing Hive installations, and leverage Hive’s metadata and storage capabilities.
 When using Spark with Hive, you can read and write data stored in Hive tables using Spark APIs. This allows you to take advantage of **the performance optimizations and scalability benefits of Spark while still being able to leverage the features and benefits of Hive**.<br>
 
+---
 Hive サポートを有効にすると、Spark が既存の Hive インストールとシームレスに統合し、Hive のメタデータとストレージ機能を活用できるようになります。
 Hive で Spark を使用すると、Spark API を使用して Hive テーブルに格納されたデータの読み取りと書き込みができます。これにより、**Spark のパフォーマンスの最適化とスケーラビリティの利点を活用しながら、Hive の機能と利点を活用することができます**。
 
@@ -48,6 +51,7 @@ spark = SparkSession \
 # 2. Get config and Confirm Catalog Implementation
 If you create the spark session without enableHiveSupport(), then the output of spark.sql.catalogImplementation must be None. Spark SQL defaults is in-memory (non-Hive) catalog.<br>
 
+---
 EnableHiveSupport() を使用せずに Spark セッションを作成した場合、spark.sql.catalogImplementation の出力は None になるはずです。 Spark SQL のデフォルトは in-memory (non-Hive) catalog となります。<br>
 
 ```
@@ -78,6 +82,7 @@ DataFrames can be saved as persistent tables **(ie. Create a Hive Table from a D
 The save() means that it creates parquet files for the DataFrame in the directory of "products_new" but it does not create metastore_db directory. You have to do it by yourself, so it is called an Unmanaged Table. See also [#4-1](https://github.com/developer-onizuka/HiveMetastore/blob/main/README.md#4-1-unmanaged-table). <br>
 The Hive metastore allows to query to the persistent table, even after spark session is restared as long as the persistent tables still exist. <br>
 
+---
 DataFrame は、DataFrame の内容を具体化し、Hive metastore 内のデータへのポインターを作成する saveAsTable コマンドを使用して、永続テーブル **(つまり、Spark の DataFrame から Hive テーブルを作成する)** として保存できます。Hive metastore も自動的に作成されるため、マネージド テーブルと呼ばれます。 saveAsTable() の代わりに save() を使用する場合は、自分で Hive metastore を作成し、テーブルを Hive metastore に関連付ける必要があります。 <br>
 save() は、DataFrame のparquetファイルを「products_new」ディレクトリに作成しますが、metastore_db ディレクトリは作成しないことを意味します。自分で行う必要があるため、アンマネージ テーブルと呼ばれます。 [#4-1](https://github.com/developer-onigura/HiveMetastore/blob/main/README.md#4-1-unmanaged-table) も参照してください。 <br>
 Hive metastore では、Spark セッションが再起動された後でも、永続テーブルがまだ存在している限り、永続テーブルに対するクエリを実行できます。<br>
@@ -120,6 +125,7 @@ spark.sql("DESCRIBE EXTENDED products_new").show(100,100)
 # 4-1. Unmanaged Table
 You have to associate between parquet files and table by yourself as like below, if you create parquet files by **save()** instead of saveAsTable():<br>
 
+---
 saveAsTable() ではなく **save()** でparquetファイルを作成する場合は、以下のように自分でparquetファイルとテーブルを関連付ける必要があります。<br>
 ```
 df.write.mode("overwrite").save("products_new")
@@ -159,6 +165,7 @@ The Hive metastore preserves **an association between the parquet file and a dat
 In other words, Define the relationship between the Parquet file and the database in order to treat Parquet files in S3 as a database. This is called Hive Metastore, and it is **stored in a database (a kind of workspaces) in Google DataProc's Metastore**. Some services such a BigQuery can refer to this Data Metastore to query the database with SQL for data analysis, instead of Parquet files directly. <br>
 In short, a metastore is a thing which can answer the question of "****How do I map the unstructured data to table columns, names and data types which will allow to me to treat as a straight up SQL table?****"
 
+---
 Spark は、#4 または #4-1 の後、現在のディレクトリに Hive metastore (metastore_db) を自動的に作成し、デフォルトの Apache Derby (完全に Java で実装されたオープン ソース リレーショナル データベース) でデプロイされます。また、Spark テーブル (本質的にはparquetのファイルのコレクション) を保存するために、spark.sql.warehouse.dir によって構成されたディレクトリも作成します。この場合のみ、Hive テーブルが作成されるときは、デフォルトで現在のディレクトリ内のディレクトリ spar-warehouse になります。 #4の。デフォルトの形式は「parquet」なので、指定しない場合はそれが想定されます。 
 > https://towardsdatascience.com/notes-about- Saving-data-with-spark-3-0-86ba85ca2b71
 
@@ -204,11 +211,13 @@ Database Class Loader started - derby.database.classpath=''
 
 As a columnar file format, Apache Parquet can be read by computers much more efficiently and cost-effectively than other formats, making it an ideal file format for big data, analytics, and data lake storage. Some of Parquet’s main benefits are that it is high performance, has efficient compression, and is the industry standard.<br>
 
+---
 列形式のファイル形式である Apache Parquet は、他の形式よりもはるかに効率的かつコスト効率よくコンピューターで読み取ることができるため、ビッグ データ、分析、データ レイク ストレージにとって理想的なファイル形式となっています。 Parquet の主な利点は、パフォーマンスが高く、圧縮が効率的で、業界標準であることです。
 
 # 6. Query the persistent table after restarting Spark Session
 You can query again even after spark.stop() and creating the session again. <br>
 
+---
 spark.stop() を実行してセッションを再度作成した後でも、再度クエリを実行できます。
 ```
 spark.sql("SELECT * FROM products_new WHERE StandardCost > 2000").show()
@@ -228,6 +237,7 @@ If mongoDB is updated, then you should load it into DataFrame with **spark.read.
 
 But how often do you update the Hive Metastore? You can learn it from the blog of [(Real-Time) Hive Crawling](https://medium.com/@pradipsk.sk/real-time-hive-crawling-cd1db9413ef2).<br>
 
+---
 mongoDB が更新された場合は、**spark.read.format("mongo")** を再度使用し、**df.write.mode("overwrite").saveAsTable("products_new")** を使用してそれを DataFrame にロードする必要があります。これにより、必要に応じて Hive metastore を更新できるようになります。
 
 Hive metastore はどのくらいの頻度で更新すべきかについては考える必要があり、 [(Real-Time) Hive Crawling](https://medium.com/@pradipsk.sk/real-time-hive-crawling-cd1db9413ef2) のブログに更新頻度に関する記述がありますので参考にしてください。
@@ -285,4 +295,5 @@ Data Source (mongoDB in this example)
 ```
 This series of steps can be thought of as the mechanism of Google Dataproc Metastore, which creates data catalogs. Google Dataproc Metastore will use Spark to perform a series of steps to create the metastore behind the process of the data imported from the data source as an ETL job.<br>
 
+---
 この一連の手順は、データ カタログを作成する Google Dataproc Metastore の仕組みと考えることができます。 Google Dataproc Metastore は、Spark を使用して、ETL ジョブとしてデータ ソースからインポートされたデータのプロセスの背後で Hive metastore を作成する一連の手順を実行します。
