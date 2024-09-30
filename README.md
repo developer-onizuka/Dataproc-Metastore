@@ -234,6 +234,9 @@ You can query again even after spark.stop() and creating the session again. <br>
 
 ---
 spark.stop() を実行してセッションを再度作成した後でも、再度クエリを実行できます。
+
+---
+
 ```
 spark.sql("SELECT * FROM products_new WHERE StandardCost > 2000").show()
 +---------+--------+---------+---------+----------------+-------------+------------+-------------+--------------------+
