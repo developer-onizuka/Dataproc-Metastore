@@ -1,7 +1,7 @@
 # Dataproc-Metastore
 
-Dataproc Metastore is a fully managed Apache Hive metastore (HMS) running on Google Cloud. Hive provides with a SQL-compatible language on Hadoop cluster. But it is very difficult to understand even difference between Hive and Presto / Spark. 
-I learn how the Hive can preserve the processing result in storage via enableHiveSupport option at initiation of Spark Session, because I don't have any pure Hive environments.
+Dataproc Metastore is a fully managed Apache Hive metastore (HMS) running on Google Cloud. In this repository, we will study Dataproc Metastore from the Apache Hive mechanism.<br>
+First of all, Apache Hive provides with a SQL-compatible language on Hadoop cluster. But it is very difficult to understand even difference between Hive and Presto / Spark. I learn how the Hive can preserve the processing result in storage via enableHiveSupport option at initiation of Spark Session, because I don't have any pure Hive environments.
 
 | |	Apache Hive |	Presto / Spark |
 | :--- | :--- | :--- |
@@ -15,7 +15,8 @@ See also URL below:
 > https://medium.com/@sarfarazhussain211/metastore-in-apache-spark-9286097180a4
 
 # 0. Create Virtual Machine and Run mongoDB
-See URL below:
+Here we will use mongoDB as the data source.<br>
+See also URL below to use Spark for mongoDB:
 > https://github.com/developer-onizuka/mongo-Spark
  
 # 1. Create Spark Session with Hive
