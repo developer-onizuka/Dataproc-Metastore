@@ -79,7 +79,7 @@ The save() means that it creates parquet files for the DataFrame in the director
 The Hive metastore allows to query to the persistent table, even after spark session is restared as long as the persistent tables still exist. <br>
 
 DataFrame は、DataFrame の内容を具体化し、Hive メタストア内のデータへのポインターを作成する saveAsTable コマンドを使用して、永続テーブル **(つまり、Spark の DataFrame から Hive テーブルを作成する)** として保存できます。メタストアも自動的に作成されるため、マネージド テーブルと呼ばれます。 saveAsTable() の代わりに save() を使用する場合は、自分でメタストアを作成し、テーブルをメタストアに関連付ける必要があります。 <br>
-save() は、DataFrame の寄木細工ファイルを「products_new」ディレクトリに作成しますが、metastore_db ディレクトリは作成しないことを意味します。自分で行う必要があるため、アンマネージ テーブルと呼ばれます。 [#4-1](https://github.com/developer-onigura/HiveMetastore/blob/main/README.md#4-1-unmanaged-table) も参照してください。 <br>
+save() は、DataFrame のparquetファイルを「products_new」ディレクトリに作成しますが、metastore_db ディレクトリは作成しないことを意味します。自分で行う必要があるため、アンマネージ テーブルと呼ばれます。 [#4-1](https://github.com/developer-onigura/HiveMetastore/blob/main/README.md#4-1-unmanaged-table) も参照してください。 <br>
 Hive メタストアでは、Spark セッションが再起動された後でも、永続テーブルがまだ存在している限り、永続テーブルに対するクエリを実行できます。<br>
 
 ```
@@ -202,10 +202,14 @@ Database Class Loader started - derby.database.classpath=''
 # 5-1. Parquet
 ![chart.png](https://www.dremio.com/wp-content/uploads/2022/04/chart.png)
 
-As a columnar file format, Apache Parquet can be read by computers much more efficiently and cost-effectively than other formats, making it an ideal file format for big data, analytics, and data lake storage. Some of Parquet’s main benefits are that it is high performance, has efficient compression, and is the industry standard.
+As a columnar file format, Apache Parquet can be read by computers much more efficiently and cost-effectively than other formats, making it an ideal file format for big data, analytics, and data lake storage. Some of Parquet’s main benefits are that it is high performance, has efficient compression, and is the industry standard.<br>
+
+列形式のファイル形式である Apache Parquet は、他の形式よりもはるかに効率的かつコスト効率よくコンピューターで読み取ることができるため、ビッグ データ、分析、データ レイク ストレージにとって理想的なファイル形式となっています。 Parquet の主な利点は、パフォーマンスが高く、圧縮が効率的で、業界標準であることです。
 
 # 6. Query the persistent table after restarting Spark Session
-You can query again even after spark.stop() and creating the session again. 
+You can query again even after spark.stop() and creating the session again. <br>
+
+spark.stop() を実行してセッションを再度作成した後でも、再度クエリを実行できます。
 ```
 spark.sql("SELECT * FROM products_new WHERE StandardCost > 2000").show()
 +---------+--------+---------+---------+----------------+-------------+------------+-------------+--------------------+
@@ -222,7 +226,11 @@ spark.sql("SELECT * FROM products_new WHERE StandardCost > 2000").show()
 # 7. Lifecycle of Metastore
 If mongoDB is updated, then you should load it into DataFrame with **spark.read.format("mongo")** again and **df.write.mode("overwrite").saveAsTable("products_new")** so that the Hive Metastore can be updated if needed.
 
-But how often do you update the Hive Metastore? You can learn it from the blog of [(Real-Time) Hive Crawling](https://medium.com/@pradipsk.sk/real-time-hive-crawling-cd1db9413ef2).
+But how often do you update the Hive Metastore? You can learn it from the blog of [(Real-Time) Hive Crawling](https://medium.com/@pradipsk.sk/real-time-hive-crawling-cd1db9413ef2).<br>
+
+mongoDB が更新された場合は、**spark.read.format("mongo")** を再度使用し、**df.write.mode("overwrite").saveAsTable("products_new")** を使用してそれを DataFrame にロードする必要があります。これにより、必要に応じて Hive メタストアを更新できるようになります。
+
+しかし、Hive メタストアはどのくらいの頻度で更新しますか? [(Real-Time) Hive Crawling](https://medium.com/@pradipsk.sk/real-time-hive-crawling-cd1db9413ef2) のブログから学ぶことができます。
 
 # 7-1. Add a new record into mongoDB
 ```
@@ -275,5 +283,6 @@ Data Source (mongoDB in this example)
 --> parquet files & metastore (Data Catalog)
 --> Analytics (by some Google services such as BigQuery etc...)
 ```
-This series of steps can be thought of as the mechanism of Google Dataproc Metastore, which creates data catalogs. Google Dataproc Metastore will use Spark to perform a series of steps to create the metastore behind the process of the data imported from the data source as an ETL job.
+This series of steps can be thought of as the mechanism of Google Dataproc Metastore, which creates data catalogs. Google Dataproc Metastore will use Spark to perform a series of steps to create the metastore behind the process of the data imported from the data source as an ETL job.<br>
 
+この一連の手順は、データ カタログを作成する Google Dataproc Metastore の仕組みと考えることができます。 Google Dataproc Metastore は、Spark を使用して、ETL ジョブとしてデータ ソースからインポートされたデータのプロセスの背後でメタストアを作成する一連の手順を実行します。
