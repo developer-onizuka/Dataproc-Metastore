@@ -1,7 +1,10 @@
 # Dataproc-Metastore
 
 Dataproc Metastore is a fully managed Apache Hive metastore (HMS) running on Google Cloud. In this repository, we will study Dataproc Metastore from the Apache Hive mechanism.<br>
-First of all, Apache Hive provides with a SQL-compatible language on Hadoop cluster. But it is very difficult to understand even difference between Hive and Presto / Spark. I learn how the Hive can preserve the processing result in storage via enableHiveSupport option at initiation of Spark Session, because I don't have any pure Hive environments.
+First of all, Apache Hive provides with a SQL-compatible language on Hadoop cluster. But it is very difficult to understand even difference between Hive and Presto / Spark. I learn how the Hive can preserve the processing result in storage via enableHiveSupport option at initiation of Spark Session, because I don't have any pure Hive environments.<br>
+
+Dataproc Metastore は、Google Cloud 上で実行されるフルマネージドの Apache Hive メタストア（HMS）です。このリポジトリでは、Apache Hive メカニズムから Dataproc Metastore について学習します。<br>
+まず、Apache Hive は Hadoop クラスター上で SQL 互換言語を提供します。しかし、Hive と Presto / Spark の違いを理解するのは非常に困難です。純粋な Hive 環境がないため、Spark セッションの開始時に Hive が EnableHiveSupport オプションを使用して処理結果をストレージに保存する方法を選んでいます。
 
 | |	Apache Hive |	Presto / Spark |
 | :--- | :--- | :--- |
@@ -15,13 +18,17 @@ See also URL below:
 > https://medium.com/@sarfarazhussain211/metastore-in-apache-spark-9286097180a4
 
 # 0. Create Virtual Machine and Run mongoDB
-Here we will use mongoDB as the data source.<br>
-See also URL below to use Spark for mongoDB:
+Here we will use mongoDB as the data source. See also URL below to use Spark for mongoDB:<br>
+
+ここではデータソースとしてmongoDBを使用します。 mongoDB に Spark を使用するには、以下の URL も参照してください。
 > https://github.com/developer-onizuka/mongo-Spark
  
 # 1. Create Spark Session with Hive
 Enabling hive support, allows Spark to seamlessly integrate with existing Hive installations, and leverage Hive’s metadata and storage capabilities.
-When using Spark with Hive, you can read and write data stored in Hive tables using Spark APIs. This allows you to take advantage of **the performance optimizations and scalability benefits of Spark while still being able to leverage the features and benefits of Hive**.
+When using Spark with Hive, you can read and write data stored in Hive tables using Spark APIs. This allows you to take advantage of **the performance optimizations and scalability benefits of Spark while still being able to leverage the features and benefits of Hive**.<br>
+
+Hive サポートを有効にすると、Spark が既存の Hive インストールとシームレスに統合し、Hive のメタデータとストレージ機能を活用できるようになります。
+Hive で Spark を使用すると、Spark API を使用して Hive テーブルに格納されたデータの読み取りと書き込みができます。これにより、**Spark のパフォーマンスの最適化とスケーラビリティの利点を活用しながら、Hive の機能と利点を活用することができます**。
 
 ```
 from pyspark.sql import SparkSession
@@ -39,7 +46,10 @@ spark = SparkSession \
 ```
 
 # 2. Get config and Confirm Catalog Implementation
-If you create the spark session without enableHiveSupport(), then the output of spark.sql.catalogImplementation must be None. Spark SQL defaults is in-memory (non-Hive) catalog.
+If you create the spark session without enableHiveSupport(), then the output of spark.sql.catalogImplementation must be None. Spark SQL defaults is in-memory (non-Hive) catalog.<br>
+
+EnableHiveSupport() を使用せずに Spark セッションを作成した場合、spark.sql.catalogImplementation の出力は None になるはずです。 Spark SQL のデフォルトは in-memory (non-Hive) catalog となります。<br>
+
 ```
 conf = spark.sparkContext.getConf()
 print("# spark.app.name = ", conf.get("spark.app.name"))
@@ -66,7 +76,12 @@ df = spark.read.format("mongo") \
 # 4. Save the DataFrame as a persistent table with some transformations
 DataFrames can be saved as persistent tables **(ie. Create a Hive Table from a DataFrame in Spark)** using the saveAsTable command which will materialize the contents of the DataFrame and create a pointer to the data in the Hive metastore. It is called as a Managed Table, because metastore is also created automatically. If you use the save() instead of saveAsTable(), then you have to create metastore by yourself and associate tables with metastore. <br>
 The save() means that it creates parquet files for the DataFrame in the directory of "products_new" but it does not create metastore_db directory. You have to do it by yourself, so it is called an Unmanaged Table. See also [#4-1](https://github.com/developer-onizuka/HiveMetastore/blob/main/README.md#4-1-unmanaged-table). <br>
-The Hive metastore allows to query to the persistent table, even after spark session is restared as long as the persistent tables still exist. 
+The Hive metastore allows to query to the persistent table, even after spark session is restared as long as the persistent tables still exist. <br>
+
+DataFrame は、DataFrame の内容を具体化し、Hive メタストア内のデータへのポインターを作成する saveAsTable コマンドを使用して、永続テーブル **(つまり、Spark の DataFrame から Hive テーブルを作成する)** として保存できます。メタストアも自動的に作成されるため、マネージド テーブルと呼ばれます。 saveAsTable() の代わりに save() を使用する場合は、自分でメタストアを作成し、テーブルをメタストアに関連付ける必要があります。 <br>
+save() は、DataFrame の寄木細工ファイルを「products_new」ディレクトリに作成しますが、metastore_db ディレクトリは作成しないことを意味します。自分で行う必要があるため、アンマネージ テーブルと呼ばれます。 [#4-1](https://github.com/developer-onigura/HiveMetastore/blob/main/README.md#4-1-unmanaged-table) も参照してください。 <br>
+Hive メタストアでは、Spark セッションが再起動された後でも、永続テーブルがまだ存在している限り、永続テーブルに対するクエリを実行できます。<br>
+
 ```
 df.write.mode("overwrite").saveAsTable("products_new")
 ```
@@ -103,7 +118,9 @@ spark.sql("DESCRIBE EXTENDED products_new").show(100,100)
 ```
 
 # 4-1. Unmanaged Table
-You have to associate between parquet files and table by yourself as like below, if you create parquet files by **save()** instead of saveAsTable():
+You have to associate between parquet files and table by yourself as like below, if you create parquet files by **save()** instead of saveAsTable():<br>
+
+saveAsTable() ではなく **save()** でparquetファイルを作成する場合は、以下のように自分でparquetファイルとテーブルを関連付ける必要があります。<br>
 ```
 df.write.mode("overwrite").save("products_new")
 spark.sql("CREATE EXTERNAL TABLE external_products USING parquet LOCATION '/home/jovyan/HiveMetastore/products_new'")
@@ -141,6 +158,13 @@ Spark automatically creates metastore (metastore_db) in the current directory, d
 The Hive metastore preserves **an association between the parquet file and a database** created with saveAsTable(), even if a spark session is restarted. <br>
 In other words, Define the relationship between the Parquet file and the database in order to treat Parquet files in S3 as a database. This is called Hive Metastore, and it is **stored in a database (a kind of workspaces) in Google DataProc's Metastore**. Some services such a BigQuery can refer to this Data Metastore to query the database with SQL for data analysis, instead of Parquet files directly. <br>
 In short, a metastore is a thing which can answer the question of "****How do I map the unstructured data to table columns, names and data types which will allow to me to treat as a straight up SQL table?****"
+
+Spark は、#4 または #4-1 の後、現在のディレクトリにメタストア (metastore_db) を自動的に作成し、デフォルトの Apache Derby (完全に Java で実装されたオープン ソース リレーショナル データベース) でデプロイされます。また、Spark テーブル (本質的には寄せ木細工のファイルのコレクション) を保存するために、spark.sql.warehouse.dir によって構成されたディレクトリも作成します。この場合のみ、Hive テーブルが作成されるときは、デフォルトで現在のディレクトリ内のディレクトリ spar-warehouse になります。 #4の。デフォルトの形式は「parquet」なので、指定しない場合はそれが想定されます。 
+> https://towardsdatascience.com/notes-about- Saving-data-with-spark-3-0-86ba85ca2b71
+
+Hive メタストアは、Spark セッションが再開された場合でも、**parquetファイルと saveAsTable() で作成されたデータベース間の関連付け**を保持します。 <br>
+つまり、S3 上の Parquet ファイルをデータベースとして扱うために、Parquet ファイルとデータベースの関係を定義します。これは Hive Metastore と呼ばれ、**Google DataProc の Metastore** 内のデータベース (一種のワークスペース) に保存されます。 BigQuery などの一部のサービスは、Parquet ファイルを直接ではなく、このデータ メタストアを参照して、データ分析のために SQL を使用してデータベースにクエリを実行できます。 <br>
+つまり、メタストアは、**非構造化データをテーブルの列、名前、データ型にマッピングして、直接の SQL テーブルとして扱えるようにするにはどうすればよいですか?** という質問に答えることができるものです。<br>
 
 ![Dataproc-Metastore.jpg](https://github.com/developer-onizuka/Dataproc-Metastore/blob/main/cloud_hive.max-1400x1400.jpg)
 ```
