@@ -139,10 +139,10 @@ Spark automatically creates metastore (metastore_db) in the current directory, d
 > https://towardsdatascience.com/notes-about-saving-data-with-spark-3-0-86ba85ca2b71
 
 The Hive metastore preserves **an association between the parquet file and a database** created with saveAsTable(), even if a spark session is restarted. <br>
-In other words, Define the relationship between the Parquet file and the database in order to treat Parquet files in S3 as a database. This is called Hive Metastore, and it is **stored in a database (a kind of workspaces) in AWS Glue's Data Catalog**. Some services such a Amazon Athena can refer to this Data Catalog to query the database with SQL for data analysis, instead of Parquet files directly. <br>
+In other words, Define the relationship between the Parquet file and the database in order to treat Parquet files in S3 as a database. This is called Hive Metastore, and it is **stored in a database (a kind of workspaces) in Google DataProc's Metastore**. Some services such a BigQuery can refer to this Data Metastore to query the database with SQL for data analysis, instead of Parquet files directly. <br>
 In short, a metastore is a thing which can answer the question of "****How do I map the unstructured data to table columns, names and data types which will allow to me to treat as a straight up SQL table?****"
 
-![aws-glue](https://github.com/developer-onizuka/HiveMetastore/blob/main/20170919-aws-glue-architecture.png)
+![Dataproc-Metastore.jpg](https://github.com/developer-onizuka/Dataproc-Metastore/blob/main/cloud_hive.max-1400x1400.jpg))
 ```
 %ls -l
 total 24
@@ -249,7 +249,7 @@ Data Source (mongoDB in this example)
 --> DataFrame in Spark
 --> saveAsTable() in Spark
 --> parquet files & metastore (Data Catalog)
---> Analytics (by some AWS services such as AWS Quick Insight etc...)
+--> Analytics (by some Google services such as BigQuery etc...)
 ```
-This series of steps can be thought of as the mechanism of AWS Glue, which creates data catalogs. AWS Glue will use Spark to perform a series of steps to create the metastore behind the process of the data imported from the data source as an ETL job.
+This series of steps can be thought of as the mechanism of Google Dataproc Metastore, which creates data catalogs. Google Dataproc Metastore will use Spark to perform a series of steps to create the metastore behind the process of the data imported from the data source as an ETL job.
 
