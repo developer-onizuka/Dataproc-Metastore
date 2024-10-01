@@ -177,7 +177,7 @@ In other words, Define the relationship between the Parquet file and the databas
 In short, a metastore is a thing which can answer the question of "****How do I map the unstructured data to table columns, names and data types which will allow to me to treat as a straight up SQL table?****"
 
 ---
-Spark は、#4 または #4-1 の後、現在のディレクトリに Hive metastore (metastore_db) を自動的に作成し、デフォルトの Apache Derby (完全に Java で実装されたオープン ソース リレーショナル データベース) でデプロイされます。また、Spark テーブル (本質的にはparquetのファイルのコレクション) を保存するために、spark.sql.warehouse.dir によって構成されたディレクトリも作成します。Hive テーブルが作成されるときは、デフォルトで現在のディレクトリ内のディレクトリ spar-warehouse になります。デフォルトの形式は「parquet」なので、指定しない場合はそれが想定されます。 
+Spark は、#4 または #4-1 の後、現在のディレクトリに Hive metastore (metastore_db) を自動的に作成し、デフォルトの Apache Derby (完全に Java で実装されたオープン ソース リレーショナル データベース) でデプロイされます。また、Spark テーブル (本質的にはparquetのファイルのコレクション) を保存するために、spark.sql.warehouse.dir によって構成されたディレクトリも作成します。Hive テーブルが作成されるときは、デフォルトで現在のディレクトリ内の spark-warehouse ディレクトリになります。デフォルトの形式は「parquet」なので、指定しない場合はそれが想定されます。 
 > https://towardsdatascience.com/notes-about- Saving-data-with-spark-3-0-86ba85ca2b71
 
 Hive metastore は、Spark セッションが再開された場合でも、**parquetファイルと saveAsTable() で作成されたデータベース間の関連付け**を保持します。 <br>
