@@ -4,8 +4,8 @@ Dataproc Metastore is a fully managed Apache Hive metastore (HMS) running on Goo
 First of all, Apache Hive provides with a SQL-compatible language on Hadoop cluster. But it is very difficult to understand even difference between Hive and Presto / Spark. I learn how the Hive can preserve the processing result in storage via enableHiveSupport option at initiation of Spark Session, because I don't have any pure Hive environments.<br>
 
 ---
-Dataproc Metastore は、Google Cloud 上で実行されるフルマネージドの Apache Hive metastore（HMS）です。このリポジトリでは、Apache Hive メカニズムから Dataproc Metastore について学習します。<br>
-そもそも、Apache Hive は Hadoop クラスター上で SQL 互換言語を提供するものです。念の為、Hive と Presto / Spark の違いを以下に整理しておきます。今回、純粋な Hive 環境を準備するのが難しかったため、Spark セッションの開始時に EnableHiveSupport オプションを使用して処理結果をストレージに保存する方法で、Hive環境を再現しています。
+Dataproc Metastore は、Google Cloud 上で実行されるフルマネージドの Apache Hive metastore（HMS）です。ここでは、Apache Hive メカニズムから Dataproc Metastore の実装について実機で確認することが狙いです。<br>
+そもそも、Apache Hive は Hadoop クラスター上で SQL 互換言語を提供するものです。念の為、Hive と Presto / Spark の違いを以下に整理しておきます。今回、実機で metastore の動きを確認する上で、純粋な Hive 環境を準備するのが難しかったため、Spark セッションの開始時に EnableHiveSupport オプションを使用して処理結果をストレージに保存する方法で、Hive環境を再現しています。
 
 ---
 
