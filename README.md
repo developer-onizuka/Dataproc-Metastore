@@ -91,7 +91,7 @@ The save() means that it creates parquet files for the DataFrame in the director
 The Hive metastore allows to query to the persistent table, even after spark session is restared as long as the persistent tables still exist. <br>
 
 ---
-DataFrame は、DataFrame の内容を具体化し、Hive metastore 内のデータへのポインターを作成する saveAsTable コマンドを使用して、永続テーブル **(つまり、Spark の DataFrame から Hive テーブルを作成する)** として保存できます。Hive metastore も自動的に作成されるため、マネージド テーブルと呼ばれます。 saveAsTable() の代わりに save() を使用する場合は、自分で Hive metastore を作成し、テーブルを Hive metastore に関連付ける必要があります。 <br>
+DataFrame は、DataFrame の内容をマテリアライズし、Hive metastore 内のデータへのポインターを作成する saveAsTable コマンドを使用して、永続テーブル **(つまり、Spark の DataFrame から Hive テーブルを作成する)** として保存できます。Hive metastore も自動的に作成されるため、マネージド テーブルと呼ばれます。 saveAsTable() の代わりに save() を使用する場合は、自分で Hive metastore を作成し、テーブルを Hive metastore に関連付ける必要があります。 <br>
 save() は、DataFrame のparquetファイルを「products_new」ディレクトリに作成しますが、metastore_db ディレクトリは作成しないことを意味します。自分で行う必要があるため、アンマネージ テーブルと呼ばれます。 [#4-1](https://github.com/developer-onigura/HiveMetastore/blob/main/README.md#4-1-unmanaged-table) も参照してください。 <br>
 Hive metastore では、Spark セッションが再起動された後でも、永続テーブルがまだ存在している限り、永続テーブルに対するクエリを実行できます。<br>
 
