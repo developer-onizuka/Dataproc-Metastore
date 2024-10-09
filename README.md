@@ -316,6 +316,6 @@ Data Source (mongoDB in this example)
 This series of steps can be thought of as the mechanism of Google Dataproc Metastore, which creates data catalogs. Google Dataproc Metastore will use Spark to perform a series of steps to create the metastore behind the process of the data imported from the data source as an ETL job.<br>
 
 ---
-この一連の手順は、データ カタログを作成する Google Dataproc Metastore の仕組みと考えることができます。 Google Dataproc Metastore は、Spark を使用して、ETL ジョブとしてデータ ソースからインポートされたデータのプロセスの背後で Hive metastore を作成する一連の手順を実行します。
+この一連の手順は、データ カタログを作成する Google Dataproc Metastore の仕組みになります。 今回、Google Dataproc Metastore は、Spark を使用して、ETL ジョブとしてデータ ソースからインポートされたデータのプロセスの背後で Hive metastore を作成する一連の手順を実行することを実機で確認することをしました。
 
 ---
